@@ -1,0 +1,192 @@
+.category_image {
+  width: 300px;
+}
+.categoryPhoto {
+  margin: auto;
+}
+
+.Rating {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #73a24e;
+  border-radius: 25;
+  height: 40;
+  padding-top: 7;
+  margin-top: 10;
+}
+
+.RatingCard {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  color: #39395f;
+  border-radius: 25px;
+  height: 30px;
+  margin-top: 10px;
+}
+
+.MealCardContainer {
+  background-color: #73a24e;
+  width: 700px;
+  border-radius: 15px;
+  min-height: 700px;
+  padding: 20px;
+  border: solid 2px #416a59;
+  margin: 40px;
+}
+
+.MealCard {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.RightMealCard {
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 700px;
+}
+
+.MealCardHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  color: #39395f;
+  font-weight: bold;
+  font-size: 16px;
+  border-radius: 25px;
+  height: 40px;
+  margin-bottom: 10px;
+}
+
+.PrepCookTime {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 25px;
+  background-color: #fff;
+  color: #39395f;
+  height: 30px;
+  width: 350px;
+  font-size: 10pt;
+  margin-top: 10px;
+}
+
+.Ingredients {
+  border-radius: 25px;
+  padding: 10px;
+  background-color: #fff;
+  color: #39395f;
+  margin-top: 10px;
+  font-size: 10pt;
+  padding: 20px;
+}
+
+.Method {
+  border-radius: 25px;
+  padding: 10px;
+  background-color: #fff;
+  color: #39395f;
+  font-size: 10pt;
+  padding: 20px;
+  margin-top: 5px;
+}
+
+.RecipeSourceData {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  border-radius: 25px;
+  padding: 10px;
+  background-color: #fff;
+  color: #39395f;
+  font-size: 10pt;
+  padding: 5px;
+  margin-top: 10px;
+}
+
+ul {
+  list-style: none; /* Remove default bullets */
+}
+
+ul li::before {
+  content: "\2022"; /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: red; /* Change the color */
+  font-weight: bold; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+.CenterCardContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding-top: 20px;
+  gap: 20px;
+  font-size: 10pt;
+}
+
+.IngredientsHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  font-size: 30px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.LeftIngredientsPanel {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  border-radius: 25px;
+  background-color: #f5eec2;
+  min-height: 400px;
+  padding: 15px;
+}
+
+.RightIngredientsPanel {
+  display: flex;
+  flex-direction: column;
+  width: 320px;
+  border-radius: 25px;
+  background-color: #f5eec2;
+  min-height: 400px;
+  padding: 20px;
+}
+
+.Column-gap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ShoppingListContainer {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: "flex-start";
+  color: #39395f;
+  gap: 10px;
+}
+
+.ShoppingListColumn {
+  background-color: #fff;
+  border-radius: 25px;
+  padding: 10px;
+  width: 320px;
+}
+
+.ShoppingDialog .modal-content {
+  background-image: url("../images/paper-seamless-background-1380.jpg");
+}
