@@ -53,7 +53,7 @@ class App extends Component {
           <AppHeader />
           <SearchBox />
           <main className="container">
-            {/* <Switch>
+            <Switch>
               <Route
                 path="/search/:keywords"
                 exact={true}
@@ -89,8 +89,8 @@ class App extends Component {
               <Route path="/logout" component={Logout} />
               <ProtectedRoute path="/register" component={RegisterForm} />
               <ProtectedRoute path="/search" component={SearchContainer} />
-              <Route path="/test" component={TestComp} /> 
-            </Switch> */}
+        <Route path="/test" component={TestComp} /> */}
+            </Switch>
           </main>
           {/* <div id="footer">&copy; 2021</div> */}
           <footer>
