@@ -1,1 +1,1 @@
-web: node --inspect=8080 src/index.js
+web: npm start
