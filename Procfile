@@ -1,1 +1,1 @@
-web: node --inspect=8080 index.js
+web: node --inspect=8080 src/index.js
