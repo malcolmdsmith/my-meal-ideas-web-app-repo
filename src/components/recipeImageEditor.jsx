@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import { useHistory } from "react-router-dom";
 
 import { uploadImageS3 } from "../services/amplify";
 import {
@@ -13,37 +11,37 @@ import { getRecipe } from "../services/recipeService";
 import ImageViewer from "./common/imageViewer";
 import ImageEditor from "./common/imageEditor";
 import Button from "./common/button";
+import { Component } from "react";
 
-const RecipeImageEditor = () => {
-  const [recipe, setRecipe] = useState({});
-  const [images, setImages] = useState([]);
-  let params = useParams();
-  const history = useHistory();
+class RecipeImageEditor extends Component {
+  state = {
+    recipe: {},
+    images: [],
+  };
 
-  useEffect(() => {
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    window.scrollTo(0, 120);
-  }, []);
+  async componentDidMount() {
+    await this.loadData();
+  }
 
-  const loadData = async () => {
-    const recipeId = params.recipeId;
+  loadData = async () => {
+    console.log(this.props.match.params.recipeId);
+    const recipeId = this.props.match.params.recipeId;
     const recipe = await getRecipe(recipeId);
-    setRecipe(recipe);
-    loadImages(recipe);
+    this.setState({ recipe });
+    this.loadImages(recipe);
   };
 
-  const loadImages = async (recipe) => {
+  loadImages = async (recipe) => {
     const images = await getRecipeImagesNoCategory(recipe.id);
-    setImages(images);
+    this.setState({ images });
   };
 
-  const handleImageSelect = (image) => {};
-  const handleImageDelete = async (image) => {
+  handleImageDelete = async (image) => {
     await deleteRecipeImage(image);
-    await loadImages(recipe);
+    await this.loadImages(this.state.recipe);
   };
-  const handleImageAdd = async (
+
+  handleImageAdd = async (
     image_file,
     image_format,
     image_width,
@@ -58,55 +56,62 @@ const RecipeImageEditor = () => {
       recipe_image_format: image_format,
       image_width: image_width,
       image_height: image_height,
-      recipe_id: recipe.id,
+      recipe_id: this.state.recipe.id,
       show_main_image: true,
       owner_id: 1,
     };
 
     await saveRecipeImage(image);
-    await loadImages(recipe);
+    await this.loadImages(this.state.recipe);
   };
 
-  const handleDone = () => {
-    history.push({ pathname: `/meal/view/${recipe.id}` });
+  handleImageSelect = (image) => {};
+
+  handleDone = () => {
+    this.props.history.push({ pathname: `/meal/view/${this.state.recipe.id}` });
   };
 
-  return (
-    <div>
-      <div className="CenterCardContainer">
-        <div className="MealCardContainer">
-          <div className="IngredientsHeader">PHOTOS EDITOR</div>
-          <div className="MealCardHeader">{recipe.recipeTitle}</div>
-          <div className="CenterCardContainer">
-            <div className="LeftIngredientsPanel">
-              <ImageEditor
-                onImageAdd={handleImageAdd}
-                submitButtonName="ADD"
-                submitButtonIcon="plus"
-              />
-              <Button
-                title="DONE"
-                icon="smile"
-                className="Button Done"
-                onPress={handleDone}
-              />
-            </div>
-            <div className="RightIngredientsPanel">
-              <ImageViewer
-                images={images}
-                showheader={false}
-                widthFactor={0.3}
-                padding={20}
-                onRecipeSelect={handleImageSelect}
-                width={280}
-                numColumns={1}
-                onItemDelete={handleImageDelete}
-              />
+  render() {
+    const { recipe, images } = this.state;
+
+    return (
+      <div>
+        <div className="CenterCardContainer">
+          <div className="MealCardContainer">
+            <div className="IngredientsHeader">PHOTOS EDITOR</div>
+            <div className="MealCardHeader">{recipe.recipeTitle}</div>
+            <div className="CenterCardContainer">
+              <div className="LeftIngredientsPanel">
+                <ImageEditor
+                  onImageAdd={this.handleImageAdd}
+                  submitButtonName="ADD"
+                  submitButtonIcon="plus"
+                />
+                <Button
+                  title="DONE"
+                  icon="smile"
+                  className="Button Done"
+                  onPress={this.handleDone}
+                />
+              </div>
+              <div className="RightIngredientsPanel">
+                <ImageViewer
+                  images={images}
+                  showheader={false}
+                  widthFactor={0.3}
+                  padding={20}
+                  onRecipeSelect={this.handleImageSelect}
+                  width={280}
+                  numColumns={1}
+                  onItemDelete={this.handleImageDelete}
+                />
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
+
 export default RecipeImageEditor;
