@@ -15,7 +15,7 @@ export default class GetDate extends React.Component {
     const { dateToFormat } = this.state;
     return (
       <span style={{ fontSize: "11pt" }}>
-        <Moment format="ddd Do MMMM YYYY" date={dateToFormat} />
+        <Moment format="ddd Do MMM YYYY" date={dateToFormat} />
       </span>
     );
   }

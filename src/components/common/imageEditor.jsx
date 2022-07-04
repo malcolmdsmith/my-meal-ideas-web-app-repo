@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import Resizer from "react-image-file-resizer";
+import "react-image-crop/dist/ReactCrop.css";
 
 import { toast } from "react-toastify";
 import logo from "../../images/logo192.png";
@@ -13,6 +15,12 @@ class ImageEditor extends Component {
     base64TextString: "",
     image_width: 0,
     image_height: 0,
+    resizeImage: false,
+    crop: {
+      unit: "%",
+      width: 30,
+      aspect: 4 / 3,
+    },
   };
 
   componentDidMount() {}
@@ -25,11 +33,6 @@ class ImageEditor extends Component {
     const file = e.target.files[0];
 
     if (file) {
-      if (file.size > 2097152) {
-        toast.error("The image is too large to upload. 2MB maximum.");
-        e.value = "";
-        return;
-      }
       const image_format = file.name.split(".").pop();
       this.setState({ image_format });
       this.setState({ image_file: file });
@@ -62,8 +65,23 @@ class ImageEditor extends Component {
     });
   };
 
+  resizeFile = (file, width, height) =>
+    new Promise((resolve) => {
+      Resizer.imageFileResizer(
+        file,
+        width,
+        height,
+        "JPG",
+        80,
+        0,
+        (uri) => {
+          resolve(uri);
+        },
+        "file"
+      );
+    });
+
   handleClearForm = () => {
-    console.log("clear...");
     toast.dismiss();
     this.setState({
       image_file: {},
@@ -79,16 +97,28 @@ class ImageEditor extends Component {
     pic.src = logo;
   };
 
-  handleAdd = () => {
+  handleAdd = async () => {
     const { image_file, image_format, image_width, image_height } = this.state;
+
     const bool = isEmpty(image_file);
-    console.log(bool);
+    console.info(bool);
     if (bool) {
-      console.log(image_file);
       toast.error("You must select an image!");
       return;
     }
-    this.props.onImageAdd(image_file, image_format, image_width, image_height);
+    let file = {};
+    let width = image_width;
+    let height = image_height;
+    let format = image_format;
+
+    if (image_file.size > 2097152) {
+      width = image_width * 0.5;
+      height = image_height * 0.5;
+      file = await this.resizeFile(image_file, width, height);
+      format = "JPG";
+    } else file = image_file;
+
+    this.props.onImageAdd(file, format, width, height);
     this.handleClearForm();
   };
 
@@ -116,6 +146,7 @@ class ImageEditor extends Component {
               display: "flex",
               flexDirection: "column",
               marginTop: "20px",
+              paddingRight: "10px",
             }}
           >
             <div>

@@ -22,7 +22,7 @@ export async function saveIngredient(ingredient) {
 }
 
 export function getIngredientsByRecipe(recipeId) {
-  return http.get(getUrl(`/recipe/${recipeId}`));
+  return http.get(getUrl(`recipe/${recipeId}`));
 }
 
 export function deleteIngredient(id) {

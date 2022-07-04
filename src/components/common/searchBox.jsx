@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchButton from "./searchButton";
-import SignIn from "./signIn";
+import SignIn from "./signInSignOutMenu";
 
 const SearchBox = () => {
   let history = useHistory();
@@ -16,7 +16,7 @@ const SearchBox = () => {
   const handleClearSearchKeywords = () => {
     let keywords = document.getElementById("search");
     keywords.value = "";
-    history.push({ pathname: `/search/none` });
+    history.push({ pathname: `/` });
   };
 
   const handleKeyPress = (e) => {

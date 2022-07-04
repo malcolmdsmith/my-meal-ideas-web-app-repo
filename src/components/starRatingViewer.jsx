@@ -6,10 +6,11 @@ export default function StarRatingViewer({ rating, ratingClass }) {
     const stars = [];
 
     for (let i = 5; i >= 0; i--) {
+      //console.info(i, rating, stars);
       if (i >= rating) {
         //stars.push("star-outline");
       } else {
-        if (i + 0.5 === rating) {
+        if (i + 0.5 === parseFloat(rating)) {
           stars.push("star-half-alt");
         } else {
           stars.push("star");

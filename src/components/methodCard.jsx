@@ -1,8 +1,11 @@
 import React from "react";
 import { Markup } from "interweave";
 
-const MethodCard = ({ text, heading }) => {
+const MethodCard = ({ text, heading, className }) => {
   const methodToList = (text) => {
+    if (text === null || text === undefined) return "";
+    if (heading === "Comments")
+      return text === "" || text === null ? "Nil." : text;
     const lines = text.split("\n");
     let html = "<ol>";
     for (let line in lines) {
@@ -15,22 +18,20 @@ const MethodCard = ({ text, heading }) => {
 
   return (
     <React.Fragment>
-      {text === undefined || text === "" ? null : (
-        <div className="Method">
-          <div
-            style={{
-              fontSize: "10pt",
-              fontWeight: "bold",
-              marginBottom: "5px",
-            }}
-          >
-            {heading}
-          </div>
-          <div>
-            <Markup content={methodToList(text)} />
-          </div>
+      <div className={className}>
+        <div
+          style={{
+            fontSize: "10pt",
+            fontWeight: "bold",
+            marginBottom: "5px",
+          }}
+        >
+          {heading}
         </div>
-      )}
+        <div>
+          <Markup content={methodToList(text)} />
+        </div>
+      </div>
     </React.Fragment>
   );
 };

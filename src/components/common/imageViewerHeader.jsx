@@ -1,10 +1,10 @@
 import React from "react";
 
-const ImageViewerHeader = ({ images }) => {
+const ImageViewerHeader = ({ totalImages }) => {
   return (
     <div>
       <span style={{ color: "grey", fontSize: "10pt" }}>
-        ({images.length} meal ideas found).
+        ({totalImages} meal ideas found).
       </span>
     </div>
   );

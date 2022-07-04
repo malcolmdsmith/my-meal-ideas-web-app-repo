@@ -22,17 +22,30 @@ export async function getRecipeImagesNoCategory(recipeId) {
 }
 
 export async function getImages(keywords, offset, imageCount) {
-  const images = await http.get(
+  const data = await http.get(
     getUrl(`category/${keywords}?offset=${offset}&imageCount=${imageCount}`)
   );
+  await getImageUrls(data.images);
 
+  return data;
+}
+
+export function setMealOFTheWeek(image_id) {
+  return http.put(getUrl(`mealOfTheWeek/${image_id}`));
+}
+
+export async function getMealOfTheWeek() {
+  const image = await http.get(getUrl(`mealOfTheWeek`));
+  if (image === null) throw Error("Cannot find image for meal of the week!");
+
+  const images = [];
+  images.push(image);
   return await getImageUrls(images);
 }
 
 async function getImageUrls(images) {
   for (const image of images) {
     const imgUrl = await getS3Image(image.image);
-    //console.log("img...", img);
     image.imageUrl = imgUrl.split("?")[0];
   }
   return images;

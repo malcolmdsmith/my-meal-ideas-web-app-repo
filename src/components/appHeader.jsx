@@ -1,20 +1,49 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import cookbook from "../images/cookbook-design.jpeg";
+
 import GetDate from "./common/getDate";
 import AppHeaderButtons from "./appHeaderButtons";
 import AppLogo from "./appLogo";
 import MealOfTheDay from "./mealOfTheDay";
+import { Test } from "../services/recipeService";
+import { toast } from "react-toastify";
+import { getCurrentUser } from "../services/authService";
 
-const AppHeader = () => {
+const AppHeader = ({ mealOfTheWeekImage, onMealOfTheWeekSelect }) => {
+  const [user, setUser] = useState({});
   let history = useHistory();
 
-  const handleNewRecipe = () => {
+  useEffect(() => {
+    loadUser();
+  }, [mealOfTheWeekImage]);
+
+  const loadUser = async () => {
+    const usr = await getCurrentUser();
+    setUser(usr);
+  };
+
+  const handleNewRecipe = async () => {
     history.push({ pathname: "/meal/add" });
+  };
+
+  const handleTestConnection = async () => {
+    try {
+      toast.info(await Test());
+    } catch (e) {
+      toast.error("ERROR: Cannot connect to server API!!!");
+    }
   };
 
   const handleShoppingList = () => {
     history.push({ pathname: "/shopping_list" });
+  };
+
+  const handleMealOfTheWeekSelect = (image) => {
+    //return;
+    //history.push({ pathname: `/meal/view/${meal.recipe_id}` });
+    //console.info("recipe_id...", image.recipe_id);
+    onMealOfTheWeekSelect(image.recipe_id);
   };
 
   return (
@@ -36,14 +65,19 @@ const AppHeader = () => {
               src={cookbook}
               style={{ width: "220px" }}
               alt="cookbook.jpg"
+              onClick={handleTestConnection}
             ></img>
           </div>
-          <MealOfTheDay />
+          <MealOfTheDay
+            image={mealOfTheWeekImage}
+            onSelect={handleMealOfTheWeekSelect}
+          />
+
           <div
             style={{
-              marginLeft: "auto",
               alignSelf: "center",
               height: "100%",
+              width: "100%",
             }}
           >
             <div
@@ -51,15 +85,17 @@ const AppHeader = () => {
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "flex-start",
-                alignItems: "flex-end",
+                alignItems: "center",
               }}
             >
               <GetDate />
               <div style={{ marginTop: "28px" }}>
-                <AppHeaderButtons
-                  onNewRecipe={handleNewRecipe}
-                  onShoppingList={handleShoppingList}
-                />
+                {user.AllowEdits && (
+                  <AppHeaderButtons
+                    onNewRecipe={handleNewRecipe}
+                    onShoppingList={handleShoppingList}
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -64,7 +64,9 @@ class IngredientsEditor extends FormState {
   };
 
   handleDone = () => {
-    this.props.history.push({ pathname: `/meal/view/${this.state.recipe.id}` });
+    this.props.history.push({
+      pathname: `/image/editor/recipe/${this.state.recipe.id}`,
+    });
   };
 
   render() {
@@ -102,7 +104,12 @@ class IngredientsEditor extends FormState {
                     "navyLabel"
                   )}
                 </div>
-                {this.renderButton("ADD", "smile", "Button Primary", true)}
+                {this.renderButton(
+                  "ADD",
+                  "smile",
+                  "Button Primary Submit",
+                  true
+                )}
                 <Button
                   title="CLEAR"
                   icon="ban"

@@ -20,9 +20,7 @@ const Button = ({ title, icon, onPress, className }) => {
       onMouseUp={handleMouseUp}
       onClick={onPress}
     >
-      <FontAwesomeIcon icon={icon} />
-      &nbsp;
-      {title}
+      {icon && <FontAwesomeIcon icon={icon} />} &nbsp;{title}
     </div>
   );
 };

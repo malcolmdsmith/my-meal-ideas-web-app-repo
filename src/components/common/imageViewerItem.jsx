@@ -17,7 +17,8 @@ const ImageViewerItem = ({
   const handleMouseUp = () => {
     setTimeout(() => {
       setTouched(false);
-    }, 80);
+      onPress(image);
+    }, 30);
   };
 
   return (
@@ -33,11 +34,9 @@ const ImageViewerItem = ({
         </div>
       )}
       <div
-        //id="ImageViewerItem"
         className={touched ? "ImageViewerItem touched" : "ImageViewerItem"}
         onMouseDown={toggleTouched}
         onMouseUp={handleMouseUp}
-        onClick={() => onPress(image)}
       >
         <img
           src={image.imageUrl}

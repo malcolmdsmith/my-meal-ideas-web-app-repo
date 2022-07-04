@@ -12,7 +12,7 @@ const Input = ({ name, label, error, icon, iconColor, className, ...rest }) => {
         name={name}
         id={name}
         className="form-control"
-        autoComplete="off"
+        //autoComplete="off"
         autoFocus
       />
       {error && <div className="alert alert-danger">{error}</div>}

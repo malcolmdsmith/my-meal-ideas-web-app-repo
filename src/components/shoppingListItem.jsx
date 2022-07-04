@@ -1,26 +1,58 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Col, Row } from "react-bootstrap";
 
-const ShoppingListItem = ({ item, onItemDelete, onItemEdit, onItemPicked }) => {
+const ShoppingListItem = ({
+  item,
+  listType,
+  onItemDelete,
+  onItemEdit,
+  onItemPicked,
+}) => {
   return (
-    <Row>
-      <Col xs={1} onClick={() => onItemDelete(item)}>
+    <div className="shoppingListRowContainer">
+      <div style={{ width: "20px" }} onClick={() => onItemDelete(item)}>
         <FontAwesomeIcon icon="trash-alt" color="blue" />
-      </Col>
-      <Col xs={1} onClick={() => onItemPicked(item)}>
+      </div>
+      <div
+        style={{ width: "25px" }}
+        onClick={() => onItemPicked(item)}
+        className={
+          item.picked ? "shopping-item-picked" : "shopping-item-" + listType
+        }
+      >
         {item.qty}
-      </Col>
-      <Col xs={3} onClick={() => onItemPicked(item)}>
+      </div>
+      <div
+        style={{ width: "60px" }}
+        onClick={() => onItemPicked(item)}
+        className={
+          item.picked ? "shopping-item-picked" : "shopping-item-" + listType
+        }
+      >
         {item.measure}
-      </Col>
-      <Col xs={5} onClick={() => onItemPicked(item)}>
+      </div>
+      <div
+        style={{ width: "130px" }}
+        onClick={() => onItemPicked(item)}
+        className={
+          item.picked ? "shopping-item-picked" : "shopping-item-" + listType
+        }
+      >
         {item.ingredientName}
-      </Col>
-      <Col onClick={() => onItemEdit(item)}>
+      </div>
+      <div
+        style={{ width: "40px" }}
+        onClick={() => onItemPicked(item)}
+        className={
+          item.picked ? "shopping-item-picked" : "shopping-item-" + listType
+        }
+      >
+        {item.cost}
+      </div>
+      <div style={{ width: "20px" }} onClick={() => onItemEdit(item)}>
         <FontAwesomeIcon icon="edit" color="blue" />
-      </Col>
-    </Row>
+      </div>
+    </div>
   );
 };
 export default ShoppingListItem;

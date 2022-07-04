@@ -1,5 +1,7 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
+import Dots from "react-activity/dist/Dots";
+import "react-activity/dist/Dots.css";
 
 import { uploadImageS3 } from "../services/amplify";
 import {
@@ -9,14 +11,15 @@ import {
 } from "../services/recipeImagesService";
 import { getRecipe } from "../services/recipeService";
 import ImageViewer from "./common/imageViewer";
-import ImageEditor from "./common/imageEditor";
 import Button from "./common/button";
 import { Component } from "react";
+import ImageCropper from "./common/imageCropper";
 
 class RecipeImageEditor extends Component {
   state = {
     recipe: {},
     images: [],
+    loading: false,
   };
 
   async componentDidMount() {
@@ -24,7 +27,6 @@ class RecipeImageEditor extends Component {
   }
 
   loadData = async () => {
-    console.log(this.props.match.params.recipeId);
     const recipeId = this.props.match.params.recipeId;
     const recipe = await getRecipe(recipeId);
     this.setState({ recipe });
@@ -32,8 +34,10 @@ class RecipeImageEditor extends Component {
   };
 
   loadImages = async (recipe) => {
+    this.setState({ loading: true });
     const images = await getRecipeImagesNoCategory(recipe.id);
     this.setState({ images });
+    this.setState({ loading: false });
   };
 
   handleImageDelete = async (image) => {
@@ -47,6 +51,7 @@ class RecipeImageEditor extends Component {
     image_width,
     image_height
   ) => {
+    this.setState({ loading: true });
     const id = uuidv4();
     const key = `recipe/${id}.${image_format}`;
     await uploadImageS3(key, image_file);
@@ -59,6 +64,7 @@ class RecipeImageEditor extends Component {
       recipe_id: this.state.recipe.id,
       show_main_image: true,
       owner_id: 1,
+      mealOfTheWeek: false,
     };
 
     await saveRecipeImage(image);
@@ -72,7 +78,7 @@ class RecipeImageEditor extends Component {
   };
 
   render() {
-    const { recipe, images } = this.state;
+    const { recipe, images, loading } = this.state;
 
     return (
       <div>
@@ -82,7 +88,7 @@ class RecipeImageEditor extends Component {
             <div className="MealCardHeader">{recipe.recipeTitle}</div>
             <div className="CenterCardContainer">
               <div className="LeftIngredientsPanel">
-                <ImageEditor
+                <ImageCropper
                   onImageAdd={this.handleImageAdd}
                   submitButtonName="ADD"
                   submitButtonIcon="plus"
@@ -95,16 +101,30 @@ class RecipeImageEditor extends Component {
                 />
               </div>
               <div className="RightIngredientsPanel">
-                <ImageViewer
-                  images={images}
-                  showheader={false}
-                  widthFactor={0.3}
-                  padding={20}
-                  onRecipeSelect={this.handleImageSelect}
-                  width={280}
-                  numColumns={1}
-                  onItemDelete={this.handleImageDelete}
-                />
+                <h5>Photo List</h5>
+                {loading ? (
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <Dots size={26} />
+                    <div>Loading...</div>
+                  </div>
+                ) : (
+                  <ImageViewer
+                    images={images}
+                    showheader={false}
+                    widthFactor={0.3}
+                    padding={20}
+                    onRecipeSelect={this.handleImageSelect}
+                    width={300}
+                    numColumns={1}
+                    onItemDelete={this.handleImageDelete}
+                  />
+                )}
               </div>
             </div>
           </div>

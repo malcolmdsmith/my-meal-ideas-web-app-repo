@@ -18,7 +18,7 @@ class FormState extends Component {
   };
 
   validate = () => {
-    const options = { abortEarly: false };
+    const options = { abortEarly: false, allowUnknown: true };
     const { error } = Joi.validate(this.state.data, this.schema, options);
     if (!error) return null;
 
@@ -50,6 +50,7 @@ class FormState extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
     const errors = this.validate();
+    //    console.info(errors);
     this.setState({ errors: errors || {} });
     if (errors) return;
 

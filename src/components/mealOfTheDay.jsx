@@ -1,23 +1,24 @@
-import React from "react";
-import photo from "../images/chicken-laksa-84056-1.jpeg";
+import React, { useEffect } from "react";
 
-const MealOfTheDay = () => {
+const MealOfTheDay = ({ onSelect, image }) => {
+  useEffect(() => {}, [image]);
   return (
-    <div style={{ marginLeft: "10px" }}>
+    <div style={{ marginLeft: "10px", position: "relative" }}>
       <img
-        src={photo}
+        src={image.imageUrl}
         alt="mealOfTheDay.jpg"
         style={{ width: "200px", height: "130px" }}
+        onClick={() => onSelect(image)}
       />
       <span
         style={{
           color: "#fff",
-          position: "relative",
-          left: "-170px",
-          top: "-20px",
+          position: "absolute",
+          left: "35px",
+          top: "40px",
           fontSize: "12pt",
           fontWeight: "bold",
-          width: "30px",
+          width: "140px",
         }}
       >
         Meal of the Week

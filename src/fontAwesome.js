@@ -36,6 +36,15 @@ import {
   faBan,
   faCamera,
   faSave,
+  faStepBackward,
+  faStepForward,
+  faBackward,
+  faForward,
+  faHeart,
+  faAngleLeft,
+  faAngleRight,
+  faShoppingCart,
+  faCogs,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -71,5 +80,14 @@ library.add(
   faSmile,
   faBan,
   faCamera,
-  faSave
+  faSave,
+  faStepForward,
+  faStepBackward,
+  faForward,
+  faBackward,
+  faHeart,
+  faAngleLeft,
+  faAngleRight,
+  faShoppingCart,
+  faCogs
 );

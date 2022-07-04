@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
+
 import { getRecipe } from "../services/recipeService";
 import { getRecipeImages } from "../services/recipeImagesService";
-import { AddShoppingItemsFromRecipe } from "../services/shoppingListService";
+import { AddShoppingItemsFromRecipe } from "../services/shoppingItemsService";
 import PrepCookTimeCard from "./prepCookTimeCard";
 import IngredientsCard from "./ingredientsCard";
 import StarRatingViewer from "./starRatingViewer";
@@ -11,31 +13,40 @@ import MethodCard from "./methodCard";
 import ImageViewer from "./common/imageViewer";
 import NavBack from "../components/common/navBack";
 import RecipeSourceData from "./recipeSourceData";
+import { setMealOFTheWeek } from "../services/recipeImagesService";
+import RecipeImageSelector from "./recipeImageSelector";
+import FullScreenImageViewer from "./common/fullScreenImageViewer";
+import { getCurrentUser } from "../services/authService";
 
-const MealCard = (props) => {
+const MealCard = ({ onMealOfTheWeek, showMealOfTheWeek }) => {
   const [recipe, setRecipe] = useState({});
   const [images, setImages] = useState([]);
   const [columns, setColumns] = useState(1);
   const [padding, setPadding] = useState(0);
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [showFullScreenImage, setShowFullScreenImage] = useState(false);
+  const [user, setUser] = useState({});
 
   let history = useHistory();
 
   const loadRecipes = async () => {
-    const recipeId = props.match.params.recipeId;
+    const user = getCurrentUser();
+    setUser(user);
+    const recipeId = history.location.pathname.split("/").pop();
     const recipe = await getRecipe(recipeId);
-    const images = await getRecipeImages(recipeId);
     setRecipe(recipe);
-    setImages(images);
+    const images = await getRecipeImages(recipeId);
     if (images.length > 1) {
       setColumns(2);
-      setPadding(10);
+      setPadding(5);
     }
+    setImages(images);
   };
 
   useEffect(() => {
     loadRecipes();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.match.params.recipeId]);
+  }, [showMealOfTheWeek]);
 
   const handleEdit = () => {
     history.push({ pathname: `/meal/edit/${recipe.id}` });
@@ -46,8 +57,45 @@ const MealCard = (props) => {
       history.push({ pathname: `/shopping_list` });
   };
 
+  const handleSetMealOfTheWeek = async () => {
+    console.info(images);
+    if (images.length === 1) {
+      console.info("//", images);
+      await setMealOFTheWeek(images[0].image_id);
+      toast.info("Meal of the week set!", {
+        autoClose: 2000,
+        position: "top-center",
+      });
+      onMealOfTheWeek();
+    } else {
+      setShowImageSelector(true);
+    }
+  };
+
+  const handleMOTWImageSelected = (image) => {
+    setShowImageSelector(false);
+    setMealOFTheWeek(image.image_id);
+    toast.info("Meal of the week set!");
+    onMealOfTheWeek();
+  };
+
+  const handleImageSelect = (image) => {
+    setShowFullScreenImage(true);
+  };
+
   return (
     <React.Fragment>
+      <FullScreenImageViewer
+        images={images}
+        showViewer={showFullScreenImage}
+        onHandleClose={() => setShowFullScreenImage(false)}
+      />
+      <RecipeImageSelector
+        showDialog={showImageSelector}
+        images={images}
+        onSelect={handleMOTWImageSelected}
+        onCancel={() => setShowImageSelector(false)}
+      />
       <div style={{ margin: "20px" }}>
         <NavBack />
       </div>
@@ -56,20 +104,21 @@ const MealCard = (props) => {
           display: "flex",
           flexDirection: "row",
           justifyContent: "center",
-          paddingTop: "20px",
+          paddingTop: "0px",
         }}
       >
         <div className="MealCardContainer">
           <div className="MealCardHeader">{recipe.recipeTitle}</div>
           <div className="MealCard">
             <div>
-              <div style={{ marginTop: "8px", borderRadius: "25px" }}>
+              <div style={{ marginTop: "8px" }}>
                 <ImageViewer
                   images={images}
                   showheader={false}
                   padding={padding}
                   numColumns={columns}
                   width={350}
+                  onRecipeSelect={handleImageSelect}
                 />
               </div>
               <StarRatingViewer
@@ -81,20 +130,40 @@ const MealCard = (props) => {
               <IngredientsCard recipe={recipe} />
             </div>
             <div className="RightMealCard">
-              <Button
-                title="EDIT"
-                icon="edit"
-                className="Button Primary"
-                onPress={handleEdit}
+              {user.role === "admin" && (
+                <Button
+                  title="MEAL OF THE WEEK"
+                  icon="heart"
+                  className="Button Primary"
+                  onPress={handleSetMealOfTheWeek}
+                />
+              )}
+              {user.AllowEdits && (
+                <div>
+                  <Button
+                    title="EDIT"
+                    icon="edit"
+                    className="Button Primary"
+                    onPress={handleEdit}
+                  />
+                  <Button
+                    title="ADD TO SHOPPING LIST"
+                    icon="cart-plus"
+                    className="Button Primary"
+                    onPress={handleAddShoppingItems}
+                  />
+                </div>
+              )}
+              <MethodCard
+                text={recipe.method}
+                heading="Method"
+                className="Method"
               />
-              <Button
-                title="ADD TO SHOPPING LIST"
-                icon="cart-plus"
-                className="Button Primary"
-                onPress={handleAddShoppingItems}
+              <MethodCard
+                text={recipe.comments}
+                heading="Comments"
+                className="Comments"
               />
-              <MethodCard text={recipe.method} heading="Method" />
-              <MethodCard text={recipe.comments} heading="Comments" />
             </div>
           </div>
         </div>

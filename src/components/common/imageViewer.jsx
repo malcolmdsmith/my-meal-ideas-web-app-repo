@@ -7,6 +7,7 @@ import ImageViewerHeader from "./imageViewerHeader";
 const ImageViewer = ({
   images,
   showheader,
+  totalImages,
   onRecipeSelect,
   numColumns,
   width,
@@ -19,17 +20,18 @@ const ImageViewer = ({
     const result = getImageDimensions(images, width, numColumns, padding);
     setImages(result);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [images.length]);
+  }, [JSON.stringify(images)]);
 
   return (
     <React.Fragment>
       <div>
-        {showheader && <ImageViewerHeader images={images} />}
+        {showheader && <ImageViewerHeader totalImages={totalImages} />}
         <div
           style={{
             display: "flex",
             flexWrap: "wrap",
-            width: width - padding,
+            width: width,
+            //justifyContent: "center",
           }}
         >
           {viewerImages.map((image, index) => (

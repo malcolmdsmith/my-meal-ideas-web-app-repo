@@ -11,6 +11,7 @@ const Select = ({
   icon,
   iconColor,
   className,
+  value = "",
   ...rest
 }) => {
   return (
@@ -19,7 +20,13 @@ const Select = ({
         <FontAwesomeIcon icon={icon} color={iconColor} />
         &nbsp;{label}
       </label>
-      <select name={name} id={name} {...rest} className="form-control">
+      <select
+        name={name}
+        id={name}
+        {...rest}
+        className="form-control"
+        value={value}
+      >
         <option value="" />
         {options.map((option) => (
           <option key={option[valueProperty]} value={option[valueProperty]}>

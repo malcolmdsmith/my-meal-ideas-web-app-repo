@@ -67,6 +67,7 @@ class CategoryEditorDialog extends FormState {
           show={this.props.showCategoryDialog}
           className="ShoppingDialog"
           animation={false}
+          size="xxl"
         >
           <Modal.Header>
             <Modal.Title>ADD CATEGORY</Modal.Title>

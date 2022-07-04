@@ -8,9 +8,12 @@ import {
 } from "../services/categoriesService";
 import { getSourceOptions, getRatings } from "../services/recipeService";
 import { saveRecipe, getRecipe, deleteRecipe } from "../services/recipeService";
+import { getCurrentUser } from "../services/authService";
 import Button from "./common/button";
 import CategoryEditorDialog from "./categoryEditorDialog";
 import { isEmpty } from "../utility/isEmpty";
+import { SendEmail } from "../utility/emailer";
+import icon from "../icons/heart-small.png";
 
 class MealEditor extends FormState {
   state = {
@@ -25,7 +28,7 @@ class MealEditor extends FormState {
       prepTime: "",
       cookTime: "",
       rating: "0",
-      enteredBy: "",
+      owner_id: 0,
     },
     errors: {},
     categories: [],
@@ -44,7 +47,7 @@ class MealEditor extends FormState {
     prepTime: Joi.string().label("Prep-Time").optional().allow("").max(10),
     cookTime: Joi.string().label("Cook-Time").optional().allow("").max(10),
     rating: Joi.string().label("Rating").optional(),
-    enteredBy: Joi.string().optional().allow(""),
+    owner_id: Joi.number().optional().default(0),
   };
 
   async componentDidMount() {
@@ -76,6 +79,7 @@ class MealEditor extends FormState {
         cookTime: recipe.cookTime,
         method: recipe.method,
         comments: recipe.comments,
+        owner_id: recipe.owner_id,
       };
 
       this.setState({ data, recipeId });
@@ -105,18 +109,30 @@ class MealEditor extends FormState {
       prepTime: "",
       cookTime: "",
       rating: "0",
-      enteredBy: "",
+      owner_id: 0,
     };
     this.setState({ recipeId: 0, data });
   };
 
   doSubmit = async () => {
     const { recipeId, data: recipe } = this.state;
-    if (recipeId > 0) recipe.id = recipeId;
-    recipe.enteredBy = "Malcolm";
+    if (recipeId > 0) {
+      recipe.id = recipeId;
+    } else {
+      const user = await getCurrentUser();
+      recipe.owner_id = user.id;
+    }
     const result = await saveRecipe(recipe);
-    if (result.id)
-      this.props.history.push({ pathname: `/meal/view/${result.id}` });
+    if (result.id) {
+      if (recipeId === 0) {
+        SendEmail(result.recipeTitle);
+        this.props.history.push({
+          pathname: `/meal/ingredients/${result.id}`,
+        });
+        return;
+      }
+    }
+    this.props.history.push({ pathname: `/meal/view/${result.id}` });
   };
 
   handleShowPhotos = () => {
@@ -133,14 +149,14 @@ class MealEditor extends FormState {
 
   handleCancel = () => {
     this.props.history.push({
-      pathname: `/search/none`,
+      pathname: `/`,
     });
   };
 
   handleDeleteRecipe = async () => {
     const { recipeId } = this.state;
     await deleteRecipe(recipeId);
-    this.props.history.push({ pathname: `/search/none` });
+    this.props.history.push({ pathname: `/` });
   };
 
   handleAddCategory = () => {
@@ -182,6 +198,7 @@ class MealEditor extends FormState {
         <div className="CenterCardContainer">
           <div className="MealCardContainer">
             <div className="IngredientsHeader">
+              <img src={icon} style={{ width: "50px" }} alt=""></img>
               {recipeId === 0 ? "ADD RECIPE" : "EDIT RECIPE"}
             </div>
             <form id="myform" onSubmit={this.handleSubmit}>
@@ -321,7 +338,9 @@ class MealEditor extends FormState {
                     onPress={this.handleDeleteRecipe}
                   />
                 )}
-                {this.renderButton("DONE", "smile", "Button Done", true)}
+                <div style={{ width: "97%" }}>
+                  {this.renderButton("DONE", "smile", "Button Done", false)}
+                </div>
                 <Button
                   title="CANCEL"
                   icon="ban"

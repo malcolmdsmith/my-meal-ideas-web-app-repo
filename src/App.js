@@ -1,12 +1,11 @@
 import "./App.css";
-import { ToastContainer } from "react-toastify";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { Route, Switch, withRouter, Redirect } from "react-router-dom";
 import Amplify from "aws-amplify";
 
 import "./fontAwesome";
 import React from "react";
 import { Component } from "react";
-import { login } from "./services/authService";
 import SearchResults from "./components/searchResults";
 import AppHeader from "./components/appHeader";
 import SearchBox from "./components/common/searchBox";
@@ -15,6 +14,14 @@ import MealEditor from "./components/mealEditor";
 import IngredientsEditor from "./components/ingredientsEditor";
 import RecipeImageEditor from "./components/recipeImageEditor";
 import ShoppingListCard from "./components/shoppingListCard";
+import { getMealOfTheWeek } from "./services/recipeImagesService";
+import Registration from "./components/common/registration";
+import Success from "./components/common/success";
+import Login from "./components/common/login";
+import ProfileCard from "./components/common/profile";
+import ChangePassword from "./components/common/changePassword";
+import ProtectedRoute from "./components/common/protectedRoute";
+import { checkUserLoggedIn } from "./services/httpService";
 
 Amplify.configure({
   Auth: {
@@ -32,50 +39,89 @@ Amplify.configure({
 });
 
 class App extends Component {
+  state = {
+    image: {},
+  };
+
   async componentDidMount() {
-    await login("malcolms65@gmail.com", "123456");
+    checkUserLoggedIn();
+    this.loadMealOfTheWeek();
+    //await login("malcolms65@gmail.com", "123456");
     //const user = getCurrentUser();
   }
 
+  handleMealOfTheWeekSelect = (image) => {
+    console.info("handleSelect...", image);
+    //this.props.history.push({ pathname: `/meal/view/${image.recipe_id}` });
+    this.props.history.push({ pathname: `/meal-of-the-week/139` });
+  };
+
+  handleSetMealOfTheWeek = async () => {
+    await this.loadMealOfTheWeek();
+  };
+
+  loadMealOfTheWeek = async () => {
+    try {
+      const meal = await getMealOfTheWeek();
+      this.setState({ image: meal[0] });
+    } catch (e) {
+      toast.warn(e);
+    }
+  };
+
   render() {
+    const { image } = this.state;
+    console.info("image...", image);
     return (
       <React.Fragment>
-        <ToastContainer />
-        <div
-          style={{
-            backgroundColor: "red",
-            width: "1000px",
-            height: "10px",
-            margin: "auto",
-          }}
-        ></div>
+        <ToastContainer
+          autoClose={4000}
+          closeOnClick
+          theme="colored"
+          position="bottom-center"
+        />
+        <div className="app-header-stripe" />
         <div className="App">
-          <AppHeader />
+          <AppHeader
+            mealOfTheWeekImage={image}
+            onMealOfTheWeekSelect={this.handleMealOfTheWeekSelect}
+          />
           <SearchBox />
           <main className="container">
             <Switch>
+              <Route exact path="/">
+                <Redirect to="/search/none" component={SearchResults} />
+              </Route>
               <Route
                 path="/search/:keywords"
                 exact={true}
                 component={SearchResults}
               />
-              <Route
-                path="/meal/view/:recipeId"
-                component={MealCard}
-                exact={true}
-              />
-              <Route
+              <Route path="/meal/view/:recipeId">
+                <MealCard
+                  onMealOfTheWeek={this.handleSetMealOfTheWeek}
+                  showMealOfTheWeek={false}
+                />
+              </Route>
+              <Route path="/meal-of-the-week/:recipeId">
+                <MealCard showMealOfTheWeek={true} />
+              </Route>
+              <ProtectedRoute
                 path="/meal/edit/:recipeId"
                 component={MealEditor}
                 exact={true}
               />
-              <Route path="/meal/add" component={MealEditor} exact={true} />
-              <Route
+              <ProtectedRoute
+                path="/meal/add"
+                component={MealEditor}
+                exact={true}
+              />
+              <ProtectedRoute
                 path="/image/editor/recipe/:recipeId"
                 component={RecipeImageEditor}
                 exact={true}
               />
-              <Route
+              <ProtectedRoute
                 path="/meal/ingredients/:recipeId"
                 component={IngredientsEditor}
                 exact={true}
@@ -85,16 +131,18 @@ class App extends Component {
                 component={ShoppingListCard}
                 exact={true}
               />
-              {/* <Route path="/login" component={LoginForm} />
-              <Route path="/logout" component={Logout} />
-              <ProtectedRoute path="/register" component={RegisterForm} />
-              <ProtectedRoute path="/search" component={SearchContainer} />
-        <Route path="/test" component={TestComp} /> */}
+              <Route path="/register" component={Registration} />
+              <Route path="/success" component={Success} />
+              <Route path="/login" component={Login} />
+              <ProtectedRoute path="/profile" component={ProfileCard} />
+              <ProtectedRoute
+                path="/changePassword"
+                component={ChangePassword}
+              />
             </Switch>
           </main>
-          {/* <div id="footer">&copy; 2021</div> */}
           <footer>
-            <p class="copyright">copyright © 2021</p>
+            <p className="copyright">copyright © 2021</p>
           </footer>
         </div>
       </React.Fragment>

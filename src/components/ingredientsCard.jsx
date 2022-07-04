@@ -15,30 +15,24 @@ const IngredientsCard = ({ recipe }) => {
 
   return (
     <React.Fragment>
-      {ingredients.length === 0 ? null : (
-        <div className="Ingredients">
-          <div
-            style={{
-              fontSize: "10pt",
-              fontWeight: "bold",
-              marginBottom: "5px",
-            }}
-          >
-            Ingredients
-          </div>
-          <ul>
-            {ingredients.map((item, index) => (
-              <li key={index}>
-                {item.qty +
-                  "  x  " +
-                  item.measure +
-                  "   " +
-                  item.ingredientName}
-              </li>
-            ))}
-          </ul>
+      <div className="Ingredients">
+        <div
+          style={{
+            fontSize: "10pt",
+            fontWeight: "bold",
+            marginBottom: "5px",
+          }}
+        >
+          Ingredients
         </div>
-      )}
+        <ul>
+          {ingredients.map((item, index) => (
+            <li key={index}>
+              {item.qty + "  x  " + item.measure + "   " + item.ingredientName}
+            </li>
+          ))}
+        </ul>
+      </div>
     </React.Fragment>
   );
 };

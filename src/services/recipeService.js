@@ -14,6 +14,7 @@ export function getRecipe(recipeId) {
 }
 
 export async function saveRecipe(recipe) {
+  //console.info(recipe);
   if (recipe.id) {
     const body = { ...recipe };
     delete body.id;
@@ -29,11 +30,14 @@ export async function saveRecipe(recipe) {
   }
 }
 
+export function Test() {
+  return http.get(getUrl("Test"));
+}
+
 export async function deleteRecipe(recipeId) {
   const images = await getRecipeImagesNoCategory(recipeId);
 
   for (const image of images) {
-    console.log("key...", image.image);
     await deleteS3Image(image.image);
   }
 
