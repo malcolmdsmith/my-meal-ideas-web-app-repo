@@ -7,7 +7,7 @@ import {
   saveShoppingItem,
   deleteShoppingItemsByUser,
   clearPickedItems,
-  updateMasterListPicked,
+  //updateMasterListPicked,
   findIngredientShoppingList,
 } from "../services/shoppingItemsService";
 import {
