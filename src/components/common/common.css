@@ -156,6 +156,10 @@
   text-decoration: none;
 }
 
+.SignInSignOut {
+  margin-right: 10px;
+}
+
 .SignIn:hover {
   color: #fff;
   text-decoration: underline;

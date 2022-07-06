@@ -58,7 +58,7 @@ const SignIn = () => {
       ) : (
         <div className="AlignRow">
           <Button
-            title={user.firstName + "  |  "}
+            title={user.firstName}
             icon="user-circle"
             className="SignInSignOut"
             onPress={handleProfile}
@@ -71,7 +71,7 @@ const SignIn = () => {
           />
           {user.role === "admin" ? (
             <Button
-              title=" | Register User"
+              title="Register User"
               icon=""
               className="SignInSignOut"
               onPress={handleRegister}
